@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.xebialabs.congruencias</groupId>
+	<artifactId>congruencias</artifactId>
+	<version>1.9.0</version>
+	<packaging>dar</packaging> <!-- DAR packaging -->
+
+	<properties>
+		<com.xebialabs.congruencias.schemabdd.version>1.1.0</com.xebialabs.congruencias.schemabdd.version>
+		<com.xebialabs.congruencias.webservices.version>1.2.0</com.xebialabs.congruencias.webservices.version>
+		<com.xebialabs.congruencias.webapp.version>1.0.0</com.xebialabs.congruencias.webapp.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.xebialabs.congruencias</groupId>
+			<artifactId>schemabdd</artifactId>
+			<version>${com.xebialabs.congruencias.schemabdd.version}</version>
+			<type>zip</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.xebialabs.congruencias</groupId>
+			<artifactId>webservices</artifactId>
+			<version>${com.xebialabs.congruencias.webservices.version}</version>
+			<type>aar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.xebialabs.congruencias</groupId>
+			<artifactId>webapp</artifactId>
+			<version>${com.xebialabs.congruencias.webapp.version}</version>
+			<type>war</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.xebialabs.congruencias</groupId>
+                                    <artifactId>schemabdd</artifactId>
+                                    <version>${com.xebialabs.congruencias.schemabdd.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>target/sqls/mysqls</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+				<groupId>com.xebialabs.deployit</groupId>
+				<artifactId>maven-deployit-plugin</artifactId>
+				<version>4.5.2</version>
+				<extensions>true</extensions>
+				<configuration>
+					<deploymentPackageProperties>
+						<application>Applications/congruencias</application>
+						<!-- <orchestrator>default</orchestrator> -->
+						<!-- <satisfiesReleaseNotes>true</satisfiesReleaseNotes> -->
+					</deploymentPackageProperties>
+					<serverAddress>localhost</serverAddress>
+					<secured>true</secured>
+					<port>4517</port>
+					<username>admin</username>
+					<password>2001jcla</password>
+
+
+					<deployables>
+
+						<liquibase.Changelog name="changesets" groupId="com.xebialabs.congruencias"
+							artifactId="schemabdd" file="target/sqls/mysqls">
+							<changeLogFile>db.changelog-master.xml</changeLogFile>
+							<!-- <rollbackVersion>${com.xebialabs.congruencias.schemabdd.version}</rollbackVersion> -->
+							<rollbackVersion>2</rollbackVersion>
+						</liquibase.Changelog>
+						<!--
+						<lyhsoft.ZipFile name="schemabdd" groupId="com.xebialabs.congruencias"
+							artifactId="schemabdd">
+							<tags>
+								<value>hosts-with-bdd-exclude</value>
+							</tags>
+							<checksum>${com.xebialabs.congruencias.schemabdd.version}</checksum>
+							<versionartifactory>${com.xebialabs.congruencias.schemabdd.version}</versionartifactory>
+							<targetFileName>liquibase-${com.xebialabs.congruencias.schemabdd.version}.zip</targetFileName>
+							<targetPath>{{liquibase.zip.directory}}</targetPath>
+						</lyhsoft.ZipFile>
+						-->
+						<file.File name="webservices" groupId="com.xebialabs.congruencias"
+							artifactId="webservices">
+							<targetFileName>webservices.aar</targetFileName>
+							<targetPath>{{axis2.services.directory}}</targetPath>
+							<checksum>${com.xebialabs.congruencias.webservices.version}</checksum>
+						</file.File>
+						<tomcat.War name="webapp" groupId="com.xebialabs.congruencias"
+							artifactId="webapp">
+							<scanPlaceholders>true</scanPlaceholders>
+							<checksum>${com.xebialabs.congruencias.webapp.version}</checksum>
+							<contextRoot>congruencias</contextRoot>
+						</tomcat.War>
+						<tomcat.DataSourceSpec name="congruenciasds">
+							<!--
+							<tags>
+								<value>hosts-with-tomcat</value>
+							</tags>
+							-->
+							<jndiName>jdbc/CongruenciasDB</jndiName>
+							<driverClassName>com.mysql.jdbc.Driver</driverClassName>
+							<url>{{bdd.url}}</url>
+							<username>{{bdd.user}}</username>
+							<password>{{bdd.pass}}</password>
+						</tomcat.DataSourceSpec>
+					</deployables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
