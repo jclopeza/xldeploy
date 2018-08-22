@@ -3,12 +3,13 @@
 
 	<groupId>com.xebialabs.congruencias</groupId>
 	<artifactId>congruencias</artifactId>
-	<version>1.9.0</version>
+	<version>1.5.0-B5</version>
 	<packaging>dar</packaging> <!-- DAR packaging -->
 
 	<properties>
-		<com.xebialabs.congruencias.schemabdd.version>1.1.0</com.xebialabs.congruencias.schemabdd.version>
-		<com.xebialabs.congruencias.webservices.version>1.2.0</com.xebialabs.congruencias.webservices.version>
+		<com.xebialabs.congruencias.schemabdd.version>1.0.0</com.xebialabs.congruencias.schemabdd.version>
+        <com.xebialabs.congruencias.schemabdd.version.tag>1</com.xebialabs.congruencias.schemabdd.version.tag>
+		<com.xebialabs.congruencias.webservices.version>1.0.0</com.xebialabs.congruencias.webservices.version>
 		<com.xebialabs.congruencias.webapp.version>1.0.0</com.xebialabs.congruencias.webapp.version>
 	</properties>
 
@@ -89,7 +90,7 @@
 							artifactId="schemabdd" file="target/sqls/mysqls">
 							<changeLogFile>db.changelog-master.xml</changeLogFile>
 							<!-- <rollbackVersion>${com.xebialabs.congruencias.schemabdd.version}</rollbackVersion> -->
-							<rollbackVersion>2</rollbackVersion>
+							<rollbackVersion>${com.xebialabs.congruencias.schemabdd.version.tag}</rollbackVersion>
 						</liquibase.Changelog>
 						<!--
 						<lyhsoft.ZipFile name="schemabdd" groupId="com.xebialabs.congruencias"
